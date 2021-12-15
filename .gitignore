@@ -1,0 +1,27 @@
+# gitignore for learning-OpenGL
+# this marks a comment
+# ** options
+# **/logs        matches all files or directories named logs
+# **/logs/*.log  matches all files ending with .log in a logs directory
+# logs/**/*.log  matches all files ending with .log in logs or any subdirectories
+
+# Generics
+*.log
+*.tlog
+*.obj
+*.suo
+*.sln.docstates
+/target/
+/.classpath
+/*.project
+/.settings
+/*.springBeans
+
+# Specified
+FluidSimulator/.vs/
+
+# Build results
+**/x64
+**/build
+**/debug
+**/Debug
