@@ -5,23 +5,32 @@
 
 #include "ShaderProgram.h"
 
+#include <glad/glad.h> 
+#include <GLFW/glfw3.h>
+// OpenGL Mathematics
+#include <glm/glm/glm.hpp>
+#include <glm/glm/gtc/matrix_transform.hpp>
+#include <glm/glm/gtc/type_ptr.hpp>
+// Cpp includes
+#include <iostream>
+
 class OpenGLWindow {
 public:
-	/* Description: initializes the window to the desired screen size
-	 * Parameters: if fullScreen is true, width and height don't need to be specified
+	/* Description: Initializes the window to the desired screen size
+	 * Parameters: If fullScreen is true, width and height don't need to be specified
 	 */
-	OpenGLWindow(bool fullScreen, unsigned int scrWidth = 0, unsigned int scrHeight = 0);
+	OpenGLWindow(bool fullScreen, const char* title = "Fluid Simulation", unsigned int scrWidth = 0U, unsigned int scrHeight = 0U);
 
-	/* Description: updates the window and appropriate shaders
+	/* Description: Updates the window and appropriate shaders
 	 */
 	void update();
 
 	// Getters / Setters
-	/* Description: returns whether the window should close or not
+	/* Description: Returns whether the window should close or not
 	 */
 	bool shouldClose() const;
 
-	/* Description: deallocates resources used
+	/* Description: Deallocates resources used
 	 */
 	void deallocate();
 private:
@@ -32,12 +41,12 @@ private:
 	//float* vertices; // Objects?
 	//unsigned int* indeces;
 
-	/* Description: called when an input device is used while the window is active
+	/* Description: Called when an input device is used while the window is active
 	 */
 	void processInput(GLFWwindow* window);
 };
 
-/* Description: called whenever the user resizes the window
+/* Description: Called whenever the user resizes the window
  */
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 

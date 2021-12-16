@@ -1,7 +1,7 @@
 #include "OpenGLWindow.h"
 
 /* Constructor */
-OpenGLWindow::OpenGLWindow(bool fullScreen, unsigned int scrWidth, unsigned int scrHeight)
+OpenGLWindow::OpenGLWindow(bool fullScreen, const char* title, unsigned int scrWidth, unsigned int scrHeight)
 {
     // Initialize our variables
     this->scrWidth = scrWidth;
@@ -17,11 +17,11 @@ OpenGLWindow::OpenGLWindow(bool fullScreen, unsigned int scrWidth, unsigned int 
     // Create a window to draw on
     if (fullScreen)
     {
-        this->window = glfwCreateWindow(scrWidth, scrHeight, "FirstTry", glfwGetPrimaryMonitor(), NULL);
+        this->window = glfwCreateWindow(scrWidth, scrHeight, title, glfwGetPrimaryMonitor(), NULL);
     }
     else
     {
-        this->window = glfwCreateWindow(scrWidth, scrHeight, "FirstTry", NULL, NULL);
+        this->window = glfwCreateWindow(scrWidth, scrHeight, title, NULL, NULL);
     }
     if (window == NULL)
     {
@@ -88,7 +88,6 @@ void OpenGLWindow::deallocate()
 
 
 /* Private member functions */
-
 void OpenGLWindow::processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)  // Returns GLFW_RELEASE if not pressed

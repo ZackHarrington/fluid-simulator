@@ -9,6 +9,7 @@
 *.log
 *.tlog
 *.obj
+*.user
 *.suo
 *.sln.docstates
 /target/
