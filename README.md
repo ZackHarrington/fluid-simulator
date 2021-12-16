@@ -16,4 +16,4 @@ Before you run, make sure:
  - glad.c is added to the Source Files
 
 Troubleshooting:
- - Sometimes CL.exe won't work usually you're already running the program, simply rebuild and it should be fixed
+ - Sometimes CL.exe won't work, usually you're already running the program so close and simply rebuild and it should be fixed

@@ -54,9 +54,9 @@ public:
 
 	/* Description: Creates an array of vertices, and indices if specified, that can be used to draw the particle in OpenGL
 	   Parameters: resolution defines the number of sides the particle will have, 3 is the minimum resolution
-					includeColor specifies whether or not to add an RGB value to each vertex
+					includeColor specifies whether or not to add a RGB value to each vertex
 	 */
-	void generateOpenGLVertices(int resolution, bool includeColor, float* vertices,
+	void generateOpenGLVertices(unsigned int resolution, bool includeColor, float* vertices,
 		bool useIndices = false, unsigned int* indices = nullptr);
 
 private:

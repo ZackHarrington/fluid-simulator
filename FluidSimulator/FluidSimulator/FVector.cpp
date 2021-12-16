@@ -95,7 +95,7 @@ FVector& FVector::operator= (const FVector& copyVector)
 FVector operator+ (const FVector& v1, const FVector& v2)
 {
 	if (v1.getDimensions() != v2.getDimensions())
-		std::cout << "Illegal Argument: Vectors do not have the same dimensions" << std::endl;
+		std::cout << "Illegal Argument: Vectors do not have the same dimensions!" << std::endl;
 
 	FVector newVector(v1.getDimensions());
 	for (int i = 0; i < newVector.getDimensions(); i++)
@@ -114,7 +114,7 @@ FVector operator+ (const FVector& v1, const float& value)
 FVector operator- (const FVector& v1, const FVector& v2)
 {
 	if (v1.getDimensions() != v2.getDimensions())
-		std::cout << "Illegal Argument: Vectors do not have the same dimensions" << std::endl;
+		std::cout << "Illegal Argument: Vectors do not have the same dimensions!" << std::endl;
 
 	FVector newVector(v1.getDimensions());
 	for (int i = 0; i < newVector.getDimensions(); i++)
