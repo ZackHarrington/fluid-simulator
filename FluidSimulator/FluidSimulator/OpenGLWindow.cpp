@@ -40,13 +40,13 @@ OpenGLWindow::OpenGLWindow(bool fullScreen, const char* title, unsigned int scrW
         return;
     }
 
-    // Initialize Shaders using local file paths
-    this->shaderProgram = new ShaderProgram("vertexShader.vs", "fragmentShader.fs");
+    // Don't want no pesky back triangles overwriting the front ones
+    glEnable(GL_DEPTH_TEST);
 }
 
 
 /* Public member functions */
-void OpenGLWindow::update()
+void OpenGLWindow::draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, unsigned int numElememts)
 {
     // Input
     processInput(window);
@@ -59,11 +59,14 @@ void OpenGLWindow::update()
     shaderProgram->use();
 
     // Apply 3d transformations
+    // ...
 
     // Draw
-    //glBindVertexArray(VAO);
-    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    //glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(VAO);
+    if (useIndices)
+        glDrawElements(GL_TRIANGLES, numElememts, GL_UNSIGNED_INT, 0);
+    else
+        glDrawArrays(GL_TRIANGLES, 0, numElememts);
 
     // Check events and swap buffers
     glfwPollEvents();                       // checks if any events were tiggered (resizing, etc.)
@@ -77,11 +80,6 @@ bool OpenGLWindow::shouldClose() const
 
 void OpenGLWindow::deallocate() 
 {
-    // Deallocate resources
-    //glDeleteVertexArrays(1, &VAO);
-    //glDeleteBuffers(1, &VBO);
-    shaderProgram->deallocate();
-
     // Properly cleans and deletes all resources allocated to GLFW after the window is closed
     glfwTerminate();
 }

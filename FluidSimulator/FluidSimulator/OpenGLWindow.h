@@ -7,23 +7,20 @@
 
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
-// OpenGL Mathematics
-#include <glm/glm/glm.hpp>
-#include <glm/glm/gtc/matrix_transform.hpp>
-#include <glm/glm/gtc/type_ptr.hpp>
 // Cpp includes
 #include <iostream>
 
 class OpenGLWindow {
 public:
-	/* Description: Initializes the window to the desired screen size
+	/* Description: Initializes the window to the desired screen size, defaults to 512x512
 	 * Parameters: If fullScreen is true, width and height don't need to be specified
 	 */
-	OpenGLWindow(bool fullScreen, const char* title = "Fluid Simulation", unsigned int scrWidth = 0U, unsigned int scrHeight = 0U);
+	OpenGLWindow(bool fullScreen, const char* title, unsigned int scrWidth = 512U, unsigned int scrHeight = 512U);
 
-	/* Description: Updates the window and appropriate shaders
+	/* Description: Draws / redraws the window with the specified vertex array and shader program
+	 * Parameters: numElements should be the number of vertices when useIndices is false, and the number of triangles when true
 	 */
-	void update();
+	void draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, unsigned int numElememts);
 
 	// Getters / Setters
 	/* Description: Returns whether the window should close or not
@@ -37,9 +34,6 @@ private:
 	unsigned int scrWidth;
 	unsigned int scrHeight;
 	GLFWwindow* window;
-	ShaderProgram* shaderProgram;
-	//float* vertices; // Objects?
-	//unsigned int* indeces;
 
 	/* Description: Called when an input device is used while the window is active
 	 */

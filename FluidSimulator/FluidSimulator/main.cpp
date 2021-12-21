@@ -1,22 +1,20 @@
-#include "OpenGLWindow.h"
-#include "Particle2D.h"
+#include "Simulation2D.h"
 
 int main() {
 	/* Init */
-	OpenGLWindow window(false, "2D Fluid Simulation", 800, 600);				// Create a window
-
+	Simulation2D* sim = new Simulation2D(false, "Title goes here", 1024U, 1024U);
 
 
 
 	/* Main loop */
-	while (!window.shouldClose()) {
+	while (!sim->shouldClose()) {
 		// Run
-		window.update();
+		sim->update();
 	}
 
 
 	/* Deallocation and clean up */
-	window.deallocate();
+	sim->deallocate();
 
 
 
