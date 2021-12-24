@@ -19,12 +19,12 @@ FVector::FVector(unsigned int dimensions, float* values)
 			this->values[i] = values[i];
 	}
 }
-FVector::FVector(const FVector& copyVector)
+FVector::FVector(const FVector& copy)
 {
-	dimensions = copyVector.getDimensions();
+	dimensions = copy.getDimensions();
 	values = new float[dimensions];
 	for (int i = 0; i < dimensions; i++)
-		values[i] = copyVector.getValues()[i];
+		values[i] = copy.getValues()[i];
 }
 
 FVector::~FVector()
@@ -78,71 +78,92 @@ void FVector::normalize()
 		values[i] = values[i] / length;
 }
 
-// Overloaded operator
-FVector& FVector::operator= (const FVector& copyVector)
+// Overloaded operators
+FVector FVector::operator+ (const FVector& v)
 {
-	dimensions = copyVector.getDimensions();
+	if (dimensions != v.getDimensions())
+	{
+		std::cout << "Illegal Argument: Vectors do not have the same dimensions!" << std::endl;
+		return NULL;
+	}
+
+	FVector newVector(dimensions);
+	for (int i = 0; i < dimensions; i++)
+		newVector.getValues()[i] = values[i] + v.getValues()[i];
+
+	return newVector;
+}
+FVector FVector::operator+ (const float& value)
+{
+	FVector newVector(dimensions);
+	for (int i = 0; i < dimensions; i++)
+		newVector.getValues()[i] = values[i] + value;
+
+	return newVector;
+}
+FVector FVector::operator- (const FVector& v)
+{
+	if (dimensions != v.getDimensions())
+	{
+		std::cout << "Illegal Argument: Vectors do not have the same dimensions!" << std::endl;
+		return NULL;
+	}
+
+	FVector newVector(dimensions);
+	for (int i = 0; i < dimensions; i++)
+		newVector.getValues()[i] = values[i] - v.getValues()[i];
+
+	return newVector;
+}
+FVector FVector::operator- (const float& value)
+{
+	FVector newVector(dimensions);
+	for (int i = 0; i < dimensions; i++)
+		newVector.getValues()[i] = values[i] - value;
+
+	return newVector;
+}
+FVector FVector::operator* (const float& value)
+{
+	FVector newVector(dimensions);
+	for (int i = 0; i < dimensions; i++)
+		newVector.getValues()[i] = values[i] * value;
+
+	return newVector;
+}
+FVector FVector::operator/ (const float& value)
+{
+	FVector newVector(dimensions);
+	for (int i = 0; i < dimensions; i++)
+		newVector.getValues()[i] = values[i] / value;
+
+	return newVector;
+}
+FVector& FVector::operator= (const FVector& copy)
+{
+	dimensions = copy.getDimensions();
 	values = new float[dimensions];
 	for (int i = 0; i < dimensions; i++)
-		values[i] = copyVector.getValues()[i];
+		values[i] = copy.getValues()[i];
 
 	return *this;
 }
-
-
-/* Non-Member Functions */
-// Overloaded operators - need to be pass by reference
-FVector operator+ (const FVector& v1, const FVector& v2)
+bool FVector::operator== (const FVector& v)
 {
-	if (v1.getDimensions() != v2.getDimensions())
-		std::cout << "Illegal Argument: Vectors do not have the same dimensions!" << std::endl;
+	if (dimensions != v.getDimensions())
+		return false;
+	else
+	{
+		for (int i = 0; i < dimensions; i++)
+		{
+			if (values[i] != v.getValues()[i])
+				return false;
+		}
+	}
 
-	FVector newVector(v1.getDimensions());
-	for (int i = 0; i < newVector.getDimensions(); i++)
-		newVector.getValues()[i] = v1.getValues()[i] + v2.getValues()[i];
-
-	return newVector;
+	return true;
 }
-FVector operator+ (const FVector& v1, const float& value)
+bool FVector::operator!= (const FVector& v)
 {
-	FVector newVector(v1.getDimensions());
-	for (int i = 0; i < newVector.getDimensions(); i++)
-		newVector.getValues()[i] = v1.getValues()[i] + value;
-
-	return newVector;
-}
-FVector operator- (const FVector& v1, const FVector& v2)
-{
-	if (v1.getDimensions() != v2.getDimensions())
-		std::cout << "Illegal Argument: Vectors do not have the same dimensions!" << std::endl;
-
-	FVector newVector(v1.getDimensions());
-	for (int i = 0; i < newVector.getDimensions(); i++)
-		newVector.getValues()[i] = v1.getValues()[i] - v2.getValues()[i];
-
-	return newVector;
-}
-FVector operator- (const FVector& v1, const float& value)
-{
-	FVector newVector(v1.getDimensions());
-	for (int i = 0; i < newVector.getDimensions(); i++)
-		newVector.getValues()[i] = v1.getValues()[i] - value;
-
-	return newVector;
-}
-FVector operator* (const FVector& v1, const float& value)
-{
-	FVector newVector(v1.getDimensions());
-	for (int i = 0; i < newVector.getDimensions(); i++)
-		newVector.getValues()[i] = v1.getValues()[i] * value;
-
-	return newVector;
-}
-FVector operator/ (const FVector& v1, const float& value)
-{
-	FVector newVector(v1.getDimensions());
-	for (int i = 0; i < newVector.getDimensions(); i++)
-		newVector.getValues()[i] = v1.getValues()[i] / value;
-
-	return newVector;
+	return !((*this) == v);
 }

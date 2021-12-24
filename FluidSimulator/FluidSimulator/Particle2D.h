@@ -9,6 +9,9 @@
 class Particle2D : public AbstractParticle
 {
 public:
+	/* Description: Default constructor
+	 */
+	Particle2D() : AbstractParticle() {}
 	/* Description: Initializes a 2D particle
 	 * Parameters: position and velocity are two dimensional vertors, color is three dimensional in RGB
 	 */
@@ -22,6 +25,10 @@ public:
 	 */
 	virtual float* generateOpenGLVertices(unsigned int resolution, bool includeColor, unsigned int* vertexDataSize,
 		bool includeIndices = false, unsigned int* indicesSize = nullptr, unsigned int** indices = nullptr) override;
+
+	// Overloaded operators
+	bool operator== (const Particle2D& p);
+	bool operator!= (const Particle2D& p);
 };
 
 

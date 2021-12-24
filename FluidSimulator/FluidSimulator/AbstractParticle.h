@@ -10,6 +10,9 @@
 class AbstractParticle
 {
 public:
+	/* Description: Default constructor; initializes the partical to basic values
+	 */
+	AbstractParticle();
 	/* Description: Initializes a particle
 	 * Parameters: color is in RGB
 	 */

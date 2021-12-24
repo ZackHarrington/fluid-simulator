@@ -4,9 +4,14 @@
 #define OPENGLWINDOW_H
 
 #include "ShaderProgram.h"
+#include "FVector.h"
 
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
+// OpenGL Mathematics
+#include <glm/glm/glm.hpp>
+#include <glm/glm/gtc/matrix_transform.hpp>
+#include <glm/glm/gtc/type_ptr.hpp>
 // Cpp includes
 #include <iostream>
 
@@ -18,9 +23,14 @@ public:
 	OpenGLWindow(bool fullScreen, const char* title, unsigned int scrWidth = 512U, unsigned int scrHeight = 512U);
 
 	/* Description: Draws / redraws the window with the specified vertex array and shader program
-	 * Parameters: numElements should be the number of vertices when useIndices is false, and the number of triangles when true
+	 * Parameters: numVertices should be the number of triangles * 3
 	 */
-	void draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, unsigned int numElememts);
+	void draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, unsigned int numVertices);
+	/* Description: Draws / redraws the window with the specified vertex array, shader program, and element array
+	 * Parameters: numVertices should be the number of triangles * 3, numElements should be 
+	 */
+	void draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, 
+		unsigned int numVertices, glm::vec3* elementPositions, unsigned int numElements);
 
 	// Getters / Setters
 	/* Description: Returns whether the window should close or not
@@ -34,6 +44,7 @@ private:
 	unsigned int scrWidth;
 	unsigned int scrHeight;
 	GLFWwindow* window;
+	glm::mat4 model;
 
 	/* Description: Called when an input device is used while the window is active
 	 */

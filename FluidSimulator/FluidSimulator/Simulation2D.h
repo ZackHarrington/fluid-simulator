@@ -6,7 +6,7 @@
 #include "AbstractSimulation.h"
 #include "Particle2D.h"
 
-class Simulation2D : public AbstractSimulation
+class Simulation2D : public AbstractSimulation<Particle2D>
 {
 public:
 	/* Description: Initializes the 2D simulation
@@ -14,16 +14,17 @@ public:
 	 */
 	Simulation2D(bool fullScreen, const char* title = "2D Fluid Simulation",
 		unsigned int scrWidth = 512U, unsigned int scrHeight = 512U) :
-		AbstractSimulation(true, fullScreen, title, scrWidth, scrHeight)
+		AbstractSimulation<Particle2D>(true, fullScreen, title, scrWidth, scrHeight)
 	{
 		// Temporary Particle Generator
-		particles = new AbstractParticle*[1];										// Store as base class pointers
 		FVector position(2U, new float[] {0.0f, 0.0f});
 		FVector velocity(2U, new float[] {1.0f, 1.0f});
 		FVector color(3U, new float[] {1.0f, 1.0f, 1.0f});
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 4; i++)
 		{
-			particles[i] = new Particle2D(0.1f, 1.0f, position, velocity, color);	// Save as derived class variables
+			Particle2D p2d(0.1f, 1.0f, position, velocity, color);
+			particles.insert(p2d);
+			position = position + 0.13;
 		}
 	}
 

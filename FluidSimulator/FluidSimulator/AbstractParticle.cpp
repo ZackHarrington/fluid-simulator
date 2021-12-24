@@ -1,6 +1,15 @@
 #include "AbstractParticle.h"
 
 /* Constructor */
+AbstractParticle::AbstractParticle()
+{
+	this->radius = 1.0f;
+	this->mass = 1.0f;
+	FVector nullVector(3U, new float[] {0.0f, 0.0f, 0.0f});
+	this->position = nullVector;
+	this->velocity = nullVector;
+	this->color = nullVector;
+}
 AbstractParticle::AbstractParticle(float radius, float mass, FVector position, FVector velocity, FVector color)
 {
 	this->radius = radius;

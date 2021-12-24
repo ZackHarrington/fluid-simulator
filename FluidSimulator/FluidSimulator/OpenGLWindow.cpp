@@ -6,6 +6,7 @@ OpenGLWindow::OpenGLWindow(bool fullScreen, const char* title, unsigned int scrW
     // Initialize our variables
     this->scrWidth = scrWidth;
     this->scrHeight = scrWidth;
+    this->model = glm::mat4(1.0f);
 
     // Initialize GLFW
     glfwInit();
@@ -46,7 +47,7 @@ OpenGLWindow::OpenGLWindow(bool fullScreen, const char* title, unsigned int scrW
 
 
 /* Public member functions */
-void OpenGLWindow::draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, unsigned int numElememts)
+void OpenGLWindow::draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, unsigned int numVertices)
 {
     // Input
     processInput(window);
@@ -59,14 +60,46 @@ void OpenGLWindow::draw(ShaderProgram* shaderProgram, unsigned int VAO, bool use
     shaderProgram->use();
 
     // Apply 3d transformations
-    // ...
+    shaderProgram->set4x4Matrix("model", GL_FALSE, &model);
 
     // Draw
     glBindVertexArray(VAO);
     if (useIndices)
-        glDrawElements(GL_TRIANGLES, numElememts, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
     else
-        glDrawArrays(GL_TRIANGLES, 0, numElememts);
+        glDrawArrays(GL_TRIANGLES, 0, numVertices);
+
+    // Check events and swap buffers
+    glfwPollEvents();                       // checks if any events were tiggered (resizing, etc.)
+    glfwSwapBuffers(window);                // swap the front and back buffers
+}
+void OpenGLWindow::draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, 
+    unsigned int numVertices, glm::vec3* elementPositions, unsigned int numElements)
+{
+    // Input
+    processInput(window);
+
+    // Rendering commands
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);                               // color to clear the screen with
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                 // clear the screen
+
+    // Activate shader
+    shaderProgram->use();
+
+    glBindVertexArray(VAO);
+    for (int i = 0; i < numElements; i++)
+    {
+        // Apply 3d transformations
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, elementPositions[i]);
+        shaderProgram->set4x4Matrix("model", GL_FALSE, &model);
+
+        // Draw
+        if (useIndices)
+            glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
+        else
+            glDrawArrays(GL_TRIANGLES, 0, numVertices);
+    }
 
     // Check events and swap buffers
     glfwPollEvents();                       // checks if any events were tiggered (resizing, etc.)

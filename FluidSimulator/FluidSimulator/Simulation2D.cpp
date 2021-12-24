@@ -5,8 +5,15 @@ void Simulation2D::update()
 {
     //updateParticles();
 
-    unsigned int resolution = 32;
+    unsigned int resolution = 17;
     updateVertices(resolution);
+
+    glm::vec3* particlePositions = new glm::vec3[particles.getSize()];
+    for (unsigned int i = 0; i < particles.getSize(); i++)
+    {
+        particlePositions[i] = glm::vec3(particles[i].getPosition().getValues()[0],
+            particles[i].getPosition().getValues()[1], 0.0f);
+    }
 
     // Place vertices into the VAO
     glBindVertexArray(VAO);
@@ -34,7 +41,7 @@ void Simulation2D::update()
 
 
     // Draw to the screen
-    window->draw(shaderProgram, VAO, (indices != nullptr), resolution * 3);
+    window->draw(shaderProgram, VAO, (indices != nullptr), resolution * 3, particlePositions, particles.getSize());
 }
 
 
@@ -50,6 +57,7 @@ void Simulation2D::updateParticles()
 
 void Simulation2D::updateVertices(unsigned int resolution)
 {
-    // Temporary
-    vertexData = particles[0]->generateOpenGLVertices(resolution, true, &vertexDataSize, true, &indicesSize, &indices);
+    // Temporary - assuming radius are the same size
+    vertexData = particles[2].generateOpenGLVertices(
+        resolution, true, &vertexDataSize, true, &indicesSize, &indices);
 }

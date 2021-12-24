@@ -16,7 +16,7 @@ public:
 	FVector(unsigned int dimensions = 3U, float* values = nullptr);
 	/* Discription: FVector copy constructor
 	 */
-	FVector(const FVector& copyVector);
+	FVector(const FVector& copy);
 	/* Description: Deallocates space once vector is no longer needed
 	 */
 	~FVector();
@@ -38,21 +38,20 @@ public:
 	 */
 	void normalize();
 
-	// Overloaded operator
-	FVector& operator= (const FVector& copyVector);
-
+	// Overloaded operators - need to be pass by reference
+	FVector operator+ (const FVector& v);
+	FVector operator+ (const float& value);
+	FVector operator- (const FVector& v);
+	FVector operator- (const float& value);
+	FVector operator* (const float& value);
+	FVector operator/ (const float& value);
+	FVector& operator= (const FVector& copy);
+	bool operator== (const FVector& v);
+	bool operator!= (const FVector& v);
 private:
 	unsigned int dimensions;
 	float* values;
 };
-
-// Overloaded operators - need to be pass by reference
-FVector operator+ (const FVector& v1, const FVector& v2);
-FVector operator+ (const FVector& v1, const float& value);
-FVector operator- (const FVector& v1, const FVector& v2);
-FVector operator- (const FVector& v1, const float& value);
-FVector operator* (const FVector& v1, const float& value);
-FVector operator/ (const FVector& v1, const float& value);
 
 
 #endif

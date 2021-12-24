@@ -110,3 +110,17 @@ float* Particle2D::generateOpenGLVertices(unsigned int resolution, bool includeC
 
 	return vertexData;
 }
+
+// Overloaded operators
+bool Particle2D::operator== (const Particle2D& p)
+{
+	return (radius == p.getRadius()) &&
+		(mass == p.getMass()) &&
+		(position == p.getPosition()) &&
+		(velocity == p.getVelocity()) &&
+		(color == p.getColor());
+}
+bool Particle2D::operator!= (const Particle2D& p)
+{
+	return !((*this) == p);
+}
