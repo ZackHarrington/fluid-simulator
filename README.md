@@ -1,8 +1,7 @@
 # fluid-simulator
 My attempt at building a fluid simulator in C++
 
-Built in Visual Studio 2019
-Graphics built using OpenGL
+Built in Visual Studio 2019, Graphics built using OpenGL
 
 Before you run, make sure:
  - includes is linked in Include Directories
