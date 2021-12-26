@@ -66,14 +66,33 @@ void FVector::setDimensions(unsigned int dimensions)
 	}
 }
 
-void FVector::normalize()
+float FVector::getLength()
 {
-	// U = V / |V|
 	float sum = 0;
 	for (int i = 0; i < dimensions; i++)
 		sum += pow(values[i], 2);
 
-	float length = sqrt(sum);
+	return sqrt(sum);
+}
+
+float FVector::getDistance(const FVector& v)
+{
+	float sum = 0;
+	for (int i = 0; i < dimensions; i++)
+	{
+		if (i < v.getDimensions())
+			sum += pow(values[i] - v.getValues()[i], 2);
+		else
+			sum += pow(values[i], 2);						// value - 0
+	}
+
+	return sqrt(sum);
+}
+
+void FVector::normalize()
+{
+	// U = V / |V|
+	float length = getLength();
 	for (int i = 0; i < dimensions; i++)
 		values[i] = values[i] / length;
 }

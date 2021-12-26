@@ -5,14 +5,21 @@ void Simulation2D::update()
 {
     //updateParticles();
 
-    unsigned int resolution = 17;
-    updateVertices(resolution);
+    unsigned int resolution = 8;
+    //updateVertices(resolution);
+    // Temporary - assuming radius are the same size
+    FVector position(2U, new float[] {0.0f, 0.0f});
+    FVector velocity(2U, new float[] {1.0f, 1.0f});
+    FVector color(3U, new float[] {1.0f, 1.0f, 1.0f});
+    Particle2D particle((*particles)[0].getRadius(), 1.0f, position, velocity, color);
+    vertexData = particle.generateOpenGLVertices(
+        resolution, true, &vertexDataSize, true, &indicesSize, &indices);
 
-    glm::vec3* particlePositions = new glm::vec3[particles.getSize()];
-    for (unsigned int i = 0; i < particles.getSize(); i++)
+    glm::vec3* particlePositions = new glm::vec3[particles->getSize()];
+    for (unsigned int i = 0; i < particles->getSize(); i++)
     {
-        particlePositions[i] = glm::vec3(particles[i].getPosition().getValues()[0],
-            particles[i].getPosition().getValues()[1], 0.0f);
+        particlePositions[i] = glm::vec3((*particles)[i].getPosition().getValues()[0],
+            (*particles)[i].getPosition().getValues()[1], 0.0f);
     }
 
     // Place vertices into the VAO
@@ -41,7 +48,7 @@ void Simulation2D::update()
 
 
     // Draw to the screen
-    window->draw(shaderProgram, VAO, (indices != nullptr), resolution * 3, particlePositions, particles.getSize());
+    window->draw(shaderProgram, VAO, (indices != nullptr), resolution * 3, particlePositions, particles->getSize());
 }
 
 
@@ -57,7 +64,5 @@ void Simulation2D::updateParticles()
 
 void Simulation2D::updateVertices(unsigned int resolution)
 {
-    // Temporary - assuming radius are the same size
-    vertexData = particles[2].generateOpenGLVertices(
-        resolution, true, &vertexDataSize, true, &indicesSize, &indices);
+    
 }

@@ -148,20 +148,24 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OpenGLWindow.cpp" />
     <ClCompile Include="Particle2D.cpp" />
+    <ClCompile Include="RandomParticleFactory2D.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Simulation2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractParticle.h" />
+    <ClInclude Include="AbstractParticleFactory.h" />
     <ClInclude Include="AbstractSimulation.h" />
     <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="FVector.h" />
     <ClInclude Include="OpenGLWindow.h" />
     <ClInclude Include="Particle2D.h" />
+    <ClInclude Include="RandomParticleFactory2D.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Simulation2D.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagrams.cd" />
     <None Include="fragmentShader.fs" />
     <None Include="vertexShader.vs" />
   </ItemGroup>

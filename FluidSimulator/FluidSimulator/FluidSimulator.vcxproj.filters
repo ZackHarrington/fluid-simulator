@@ -39,6 +39,9 @@
     <ClCompile Include="AbstractParticle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RandomParticleFactory2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenGLWindow.h">
@@ -65,12 +68,21 @@
     <ClInclude Include="DynamicArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AbstractParticleFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomParticleFactory2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShader.fs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="vertexShader.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ClassDiagrams.cd">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

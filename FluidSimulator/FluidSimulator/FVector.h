@@ -34,6 +34,15 @@ public:
 	 */
 	void setDimensions(unsigned int dimensions);
 
+	/* Description: Returns the length of the vector
+	 */
+	float getLength();
+
+	/* Description: Returns the distance from another FVector
+	 * Warning: If the vectors don't have the same dimensions the distance will be reported in this->dimensions
+	 */
+	float getDistance(const FVector& v);
+
 	/* Description: Normalizes the vector
 	 */
 	void normalize();

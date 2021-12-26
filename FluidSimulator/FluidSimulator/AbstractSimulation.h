@@ -5,13 +5,14 @@
 
 #include "OpenGLWindow.h"
 #include "DynamicArray.h"
+#include "AbstractParticleFactory.h"
 
 template <typename ParticleType>
 class AbstractSimulation
 {
 public:
 	/* Description: Initializes the basic objects used by all simulations
-	 *				Leaves the OpenGL lists to be defined by derived classes
+	 *				Leaves the OpenGL lists and the particle generator to be defined by derived classes
 	 * Parameters: useIndices defines whether or not the EBO should be initialized
 	 */
 	AbstractSimulation(bool useIndices, bool fullScreen, const char* title,
@@ -37,7 +38,11 @@ public:
 
 	/* Description: Updates and draws the particles
 	 */
-	virtual void update() = 0;		// Makes the class pure virtual
+	virtual void update() = 0;				// Makes the class pure virtual
+
+	/* Description: Returns whether or not the OpenGLWindow has been closed or not
+	 */
+	bool shouldClose() { return window->shouldClose(); }
 
 	/* Description: Deallocated the space used by the variables
 	 */
@@ -56,7 +61,7 @@ public:
 		if (indices != nullptr)
 			delete[] indices;
 
-		particles.deallocate();
+		particles->deallocate();
 	}
 
 protected:
@@ -72,8 +77,8 @@ protected:
 	unsigned int indicesSize;
 
 	// Simulation variables
-	DynamicArray<ParticleType> particles;	// Defaults to a capacity of 10 to start
-	// Particle Generator
+	DynamicArray<ParticleType>* particles;	// Defaults to a capacity of 10 to start
+	AbstractParticleFactory<ParticleType>* particleFactory;
 };
 
 
