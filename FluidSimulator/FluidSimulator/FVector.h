@@ -52,6 +52,7 @@ public:
 	FVector operator+ (const float& value);
 	FVector operator- (const FVector& v);
 	FVector operator- (const float& value);
+	float operator* (const FVector& v);		// Acts like the dot product
 	FVector operator* (const float& value);
 	FVector operator/ (const float& value);
 	FVector& operator= (const FVector& copy);

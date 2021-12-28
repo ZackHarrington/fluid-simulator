@@ -3,23 +3,18 @@
 /* Public Member Functions */
 void Simulation2D::update()
 {
-    //updateParticles();
+    float timeSinceLastUpdate = glfwGetTime() - lastUpdateTime;
+    lastUpdateTime = glfwGetTime();
+    updateParticles(timeSinceLastUpdate);
 
-    unsigned int resolution = 8;
+    unsigned int resolution = 16;
     //updateVertices(resolution);
-    // Temporary - assuming radius are the same size
-    FVector position(2U, new float[] {0.0f, 0.0f});
-    FVector velocity(2U, new float[] {1.0f, 1.0f});
-    FVector color(3U, new float[] {1.0f, 1.0f, 1.0f});
-    Particle2D particle((*particles)[0].getRadius(), 1.0f, position, velocity, color);
-    vertexData = particle.generateOpenGLVertices(
-        resolution, true, &vertexDataSize, true, &indicesSize, &indices);
 
-    glm::vec3* particlePositions = new glm::vec3[particles->getSize()];
-    for (unsigned int i = 0; i < particles->getSize(); i++)
+    glm::vec3* particlePositions = new glm::vec3[particles.getSize()];
+    for (unsigned int i = 0; i < particles.getSize(); i++)
     {
-        particlePositions[i] = glm::vec3((*particles)[i].getPosition().getValues()[0],
-            (*particles)[i].getPosition().getValues()[1], 0.0f);
+        particlePositions[i] = glm::vec3(particles[i].getPosition().getValues()[0],
+            particles[i].getPosition().getValues()[1], 0.0f);
     }
 
     // Place vertices into the VAO
@@ -48,17 +43,71 @@ void Simulation2D::update()
 
 
     // Draw to the screen
-    window->draw(shaderProgram, VAO, (indices != nullptr), resolution * 3, particlePositions, particles->getSize());
+    window->draw(shaderProgram, VAO, (indices != nullptr), resolution * 3, particlePositions, particles.getSize());
 }
 
 
 /* Private Member Functions */
-void Simulation2D::updateParticles()
+void Simulation2D::updateParticles(float timeSinceLastUpdate)
 {
-    // Temporary
-    for (int i = 0; i < 1; i++)
+    float totalSpeed = 0;
+    for (int i = 0; i < particles.getSize(); i++)
     {
-        //particles[i]->setPosition(particles[i]->getPosition());
+        FVector newPosition = particles[i].getNextUpdatePosition(timeSinceLastUpdate);
+
+        totalSpeed += pow(particles[i].getVelocity().getLength(), 2);
+
+        // Check particle collisions
+        for (int j = i + 1; j < particles.getSize(); j++)
+        {
+            // Check if the two particles are touching
+            if (newPosition.getDistance(particles[j].getPosition()) <
+                particles[i].getRadius() + particles[j].getRadius())
+            {
+                particles[i].particleCollision(particles[j]);              
+            }
+        }
+
+        // Check edge collisions
+        checkEdgeCollisions(i, newPosition);
+        
+        particles[i].update(timeSinceLastUpdate);
+        //particles[i].setPosition(newPosition);
+    }
+
+    std::cout << totalSpeed << std::endl;
+}
+
+void Simulation2D::checkEdgeCollisions(int particleIndex, const FVector& newPosition)
+{
+    float radius = particles[particleIndex].getRadius();
+    if (newPosition.getValues()[0] < -1 + radius)                                // Left
+    {
+        // Invert the x direction of the velocity
+        particles[particleIndex].setVelocity(
+            FVector(2U, new float[] {-particles[particleIndex].getVelocity().getValues()[0],
+                particles[particleIndex].getVelocity().getValues()[1]}));
+    }
+    else if (newPosition.getValues()[0] > 1 - radius)                            // Right
+    {
+        // Invert the x direction of the velocity
+        particles[particleIndex].setVelocity(
+            FVector(2U, new float[] {-particles[particleIndex].getVelocity().getValues()[0],
+                particles[particleIndex].getVelocity().getValues()[1]}));
+    }
+    else if (newPosition.getValues()[1] < -1 + radius)                           // Top
+    {
+        // Invert the y direction of the velocity
+        particles[particleIndex].setVelocity(
+            FVector(2U, new float[] {particles[particleIndex].getVelocity().getValues()[0],
+                -particles[particleIndex].getVelocity().getValues()[1]}));
+    }
+    else if (newPosition.getValues()[1] > 1 - radius)                            // Bottom
+    {
+        // Invert the y direction of the velocity
+        particles[particleIndex].setVelocity(
+            FVector(2U, new float[] {particles[particleIndex].getVelocity().getValues()[0],
+                -particles[particleIndex].getVelocity().getValues()[1]}));
     }
 }
 

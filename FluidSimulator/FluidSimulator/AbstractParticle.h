@@ -55,6 +55,10 @@ public:
 	 */
 	void setColor(FVector color);
 
+	/* Description: Updates the particle based on it's velocity and the time elapsed
+	 */
+	virtual void update(float timeMultiplier);
+
 	/* Description: Creates an array of vertices, and indices, if specified, that can be used to draw the particle in OpenGL
 	 * Parameters: resolution defines the number of sides the particle will have, minimum resolution is defined by the particle class
 	 *				includeColor specifies whether or not to add a RGB value to each vertex

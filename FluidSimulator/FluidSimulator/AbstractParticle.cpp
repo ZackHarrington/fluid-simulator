@@ -36,3 +36,8 @@ void AbstractParticle::setMass(double mass)				{ this->mass = (float)mass; }
 void AbstractParticle::setPosition(FVector position)	{ this->position = position; }
 void AbstractParticle::setVelocity(FVector velocity)	{ this->velocity = velocity; }
 void AbstractParticle::setColor(FVector color)			{ this->color = color; }
+
+void AbstractParticle::update(float timeMultiplier)
+{
+	position = position + velocity * timeMultiplier;
+}

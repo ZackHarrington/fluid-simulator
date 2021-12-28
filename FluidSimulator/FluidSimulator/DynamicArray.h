@@ -36,7 +36,7 @@ public:
 		this->allocateMemory(copy.capacity);
 		for (int i = 0; i < (copy.lastElementIndex + 1); i++)
 		{
-			this.dynamicArray[i] = copy.dynamicArray[i];
+			this->dynamicArray[i] = copy.dynamicArray[i];
 		}
 	}
 	/* Description: Deallocates space once no longer in use
@@ -74,7 +74,7 @@ public:
 
 	// Overloaded bracket operators for getting and setting values
 	T operator [](int i) const { return dynamicArray[i]; }			// Gets the value
-	//T& operator [](int i) { return dynamicArray[i]; }				// Gets the value by reference so you can set it with the = sign
+	T& operator [](int i) { return dynamicArray[i]; }				// Gets the value by reference so you can set it with the = sign
 
 	/* Description: Insert data at the front of the array
 	 */
@@ -133,7 +133,7 @@ public:
 		this->allocateMemory(copy.capacity);
 		for (int i = 0; i < (copy.lastElementIndex + 1); i++)
 		{
-			this.dynamicArray[i] = copy.dynamicArray[i];
+			this->dynamicArray[i] = copy.dynamicArray[i];
 		}
 
 		return *this;

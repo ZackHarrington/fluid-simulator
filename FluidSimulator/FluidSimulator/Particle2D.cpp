@@ -111,6 +111,27 @@ float* Particle2D::generateOpenGLVertices(unsigned int resolution, bool includeC
 	return vertexData;
 }
 
+// Temporary
+FVector Particle2D::getNextUpdatePosition(float timeMultiplier)
+{
+	return position + velocity * timeMultiplier;
+}
+
+void Particle2D::particleCollision(Particle2D& p)
+{
+	// From wikipedia
+	// v1' = v1 - 2*m2/(m1+m2) * ((v1 - v2) dot (x1 - x2)) / (||x1 - x2||^2) * (x1 - x2)
+	// v2' = v2 - 2*m1/(m1+m2) * ((v2 - v1) dot (x2 - x1)) / (||x2 - x1||^2) * (x2 - x1)
+	// need to swap around the last * (x1 - x2) to fit my overloaded operators
+	FVector v1prime = velocity - (position - p.getPosition()) * (((2 * p.getMass()) / (mass + p.getMass())) *
+		((velocity - p.getVelocity()) * (position - p.getPosition())) / pow((position - p.getPosition()).getLength(), 2));
+	FVector v2prime = p.getVelocity() - (p.getPosition() - position) * (((2 * mass) / (mass + p.getMass())) *
+		((p.getVelocity() - velocity) * (p.getPosition() - position)) / pow((p.getPosition() - position).getLength(), 2));
+
+	setVelocity(v1prime);
+	p.setVelocity(v2prime);
+}
+
 // Overloaded operators
 bool Particle2D::operator== (const Particle2D& p)
 {

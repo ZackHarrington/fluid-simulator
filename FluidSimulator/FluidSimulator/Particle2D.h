@@ -26,6 +26,15 @@ public:
 	virtual float* generateOpenGLVertices(unsigned int resolution, bool includeColor, unsigned int* vertexDataSize,
 		bool includeIndices = false, unsigned int* indicesSize = nullptr, unsigned int** indices = nullptr) override;
 
+	// Temporary
+	FVector getNextUpdatePosition(float timeMultiplier);
+
+	/* Description: Computes the new velocities for the two colliding particles 
+	 */
+	void particleCollision(Particle2D& p);
+
+	//void lineCollision()
+
 	// Overloaded operators
 	bool operator== (const Particle2D& p);
 	bool operator!= (const Particle2D& p);

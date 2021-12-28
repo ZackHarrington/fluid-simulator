@@ -142,6 +142,21 @@ FVector FVector::operator- (const float& value)
 
 	return newVector;
 }
+// Acts like the dot product
+float FVector::operator* (const FVector& v)
+{
+	if (dimensions != v.getDimensions())
+	{
+		std::cout << "Illegal Argument: Vectors do not have the same dimensions!" << std::endl;
+		return NULL;
+	}
+
+	float sum = 0;
+	for (int i = 0; i < dimensions; i++)
+		sum += values[i] * v.getValues()[i];
+
+	return sum;
+}
 FVector FVector::operator* (const float& value)
 {
 	FVector newVector(dimensions);

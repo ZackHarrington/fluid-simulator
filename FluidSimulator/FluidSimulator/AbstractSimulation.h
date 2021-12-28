@@ -7,6 +7,14 @@
 #include "DynamicArray.h"
 #include "AbstractParticleFactory.h"
 
+enum ColoringStyle
+{
+	DEFAULT_WHITE,							// All particles are white
+	DEFAULT_FACTORY,						// Color is defined by the particleFactory
+	SPEED_BLUE,								// Color gets lighter the faster the particle is moving
+	SPEED_FACTORY,							// Color defined by the particleFactory, made lighter or darker based on the particle's speed
+};
+
 template <typename ParticleType>
 class AbstractSimulation
 {
@@ -16,7 +24,7 @@ public:
 	 * Parameters: useIndices defines whether or not the EBO should be initialized
 	 */
 	AbstractSimulation(bool useIndices, bool fullScreen, const char* title,
-		unsigned int scrWidth = 512U, unsigned int scrHeight = 512U)
+		unsigned int scrWidth = 512U, unsigned int scrHeight = 512U, ColoringStyle coloringStyle = DEFAULT_WHITE)
 	{
 		// The window must be defined first so an OpenGL context exists
 		window = new OpenGLWindow(fullScreen, title, scrWidth, scrHeight);
@@ -34,6 +42,9 @@ public:
 		vertexDataSize = 0;
 		indices = nullptr;
 		indicesSize = 0;
+
+		lastUpdateTime = glfwGetTime();
+		this->coloringStyle = coloringStyle;
 	}
 
 	/* Description: Updates and draws the particles
@@ -61,7 +72,7 @@ public:
 		if (indices != nullptr)
 			delete[] indices;
 
-		particles->deallocate();
+		particles.deallocate();
 	}
 
 protected:
@@ -77,8 +88,10 @@ protected:
 	unsigned int indicesSize;
 
 	// Simulation variables
-	DynamicArray<ParticleType>* particles;	// Defaults to a capacity of 10 to start
+	DynamicArray<ParticleType> particles;	// Defaults to a capacity of 10 to start
 	AbstractParticleFactory<ParticleType>* particleFactory;
+	ColoringStyle coloringStyle;
+	float lastUpdateTime;
 };
 
 
