@@ -17,7 +17,7 @@ public:
 
 	/* Description: Generates and returns a particle array of the specified size to be used at the start of a simulation
 	 */
-	virtual DynamicArray<Particle2D>* generate(unsigned int numParticles) override;
+	virtual DynamicArray<Particle2D>* generate(const unsigned int numParticles) override;
 };
 
 

@@ -16,7 +16,11 @@ public:
 	/* Description: Initializes a particle
 	 * Parameters: color is in RGB
 	 */
-	AbstractParticle(float radius, float mass, FVector position, FVector velocity, FVector color);
+	AbstractParticle(const float radius, const float mass, 
+		const FVector position, const FVector velocity, const FVector color);
+	/* Description: Deallocates resources
+	 */
+	virtual ~AbstractParticle();
 
 	// Getters / Setters
 	/* Description: Returns the particle's radius
@@ -37,27 +41,27 @@ public:
 
 	/* Description: Sets the particle's radius
 	 */
-	void setRadius(float radius);
-	void setRadius(int radius);
-	void setRadius(double radius);
+	void setRadius(const float radius);
+	void setRadius(const int radius);
+	void setRadius(const double radius);
 	/* Description: Sets the particle's mass
 	 */
-	void setMass(float mass);
-	void setMass(int mass);
-	void setMass(double mass);
+	void setMass(const float mass);
+	void setMass(const int mass);
+	void setMass(const double mass);
 	/* Description: Sets the particle's position as a float vector
 	 */
-	void setPosition(FVector position);
+	void setPosition(const FVector position);
 	/* Description: Sets the particle's velocity as a float vector
 	 */
-	void setVelocity(FVector velocity);
+	void setVelocity(const FVector velocity);
 	/* Description: Sets the particle's color as a float vector
 	 */
-	void setColor(FVector color);
+	void setColor(const FVector color);
 
 	/* Description: Updates the particle based on it's velocity and the time elapsed
 	 */
-	virtual void update(float timeMultiplier);
+	virtual void update(const float timeMultiplier);
 
 	/* Description: Creates an array of vertices, and indices, if specified, that can be used to draw the particle in OpenGL
 	 * Parameters: resolution defines the number of sides the particle will have, minimum resolution is defined by the particle class
@@ -65,8 +69,9 @@ public:
 	 *				includeIndices specifies whether or not to build an indices array at the desired location
 	 * Returns: A pointer to the vertexData is returned, it's size is placed into the specified variable, same goes for indices
 	 */
-	virtual float* generateOpenGLVertices(unsigned int resolution, bool includeColor, unsigned int* vertexDataSize, 
-		bool includeIndices = false, unsigned int* indicesSize = nullptr, unsigned int** indices = nullptr) = 0;
+	virtual float* generateOpenGLVertices(const unsigned int resolution, const bool includeColor, 
+		unsigned int* vertexDataSize, const bool includeIndices = false, 
+		unsigned int* indicesSize = nullptr, unsigned int** indices = nullptr) const = 0;
 
 protected:
 	float radius;

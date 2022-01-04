@@ -156,6 +156,7 @@
     <ClInclude Include="AbstractParticle.h" />
     <ClInclude Include="AbstractParticleFactory.h" />
     <ClInclude Include="AbstractSimulation.h" />
+    <ClInclude Include="ColoringStyle.h" />
     <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="FVector.h" />
     <ClInclude Include="OpenGLWindow.h" />

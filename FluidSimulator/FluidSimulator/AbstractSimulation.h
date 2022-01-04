@@ -3,95 +3,68 @@
 #ifndef ABSTRACTSIMULATION_H
 #define ABSTRACTSIMULATION_H
 
-#include "OpenGLWindow.h"
 #include "DynamicArray.h"
 #include "AbstractParticleFactory.h"
-
-enum ColoringStyle
-{
-	DEFAULT_WHITE,							// All particles are white
-	DEFAULT_FACTORY,						// Color is defined by the particleFactory
-	SPEED_BLUE,								// Color gets lighter the faster the particle is moving
-	SPEED_FACTORY,							// Color defined by the particleFactory, made lighter or darker based on the particle's speed
-};
+#include "ColoringStyle.h"
 
 template <typename ParticleType>
 class AbstractSimulation
 {
 public:
-	/* Description: Initializes the basic objects used by all simulations
-	 *				Leaves the OpenGL lists and the particle generator to be defined by derived classes
+	/* Description: Initializes the common simulation variables
 	 * Parameters: useIndices defines whether or not the EBO should be initialized
 	 */
-	AbstractSimulation(bool useIndices, bool fullScreen, const char* title,
-		unsigned int scrWidth = 512U, unsigned int scrHeight = 512U, ColoringStyle coloringStyle = DEFAULT_WHITE)
+	AbstractSimulation(const ColoringStyle coloringStyle = ColoringStyle::DEFAULT_WHITE, 
+		const unsigned int numParticles = 0, AbstractParticleFactory<ParticleType>* particleFactory = nullptr)
 	{
-		// The window must be defined first so an OpenGL context exists
-		window = new OpenGLWindow(fullScreen, title, scrWidth, scrHeight);
-		// Initialize Shaders using local file paths
-		shaderProgram = new ShaderProgram("vertexShader.vs", "fragmentShader.fs");
-
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		if (useIndices)
-			glGenBuffers(1, &EBO);
-		else
-			EBO = NULL;
-
-		vertexData = nullptr;
-		vertexDataSize = 0;
-		indices = nullptr;
-		indicesSize = 0;
-
-		lastUpdateTime = glfwGetTime();
+		if (particleFactory != nullptr)
+			particles = *(particleFactory->generate(numParticles));
+		this->particleFactory = particleFactory;
 		this->coloringStyle = coloringStyle;
 	}
-
-	/* Description: Updates and draws the particles
+	/* Description: Deallocates resources
 	 */
-	virtual void update() = 0;				// Makes the class pure virtual
+	virtual ~AbstractSimulation()
+	{
+		deallocate();
+	}
 
-	/* Description: Returns whether or not the OpenGLWindow has been closed or not
+	// Getters / setters
+	/* Description: Returns the coloring style used by the simulation
 	 */
-	bool shouldClose() { return window->shouldClose(); }
+	ColoringStyle getColoringStyle() const						{ return coloringStyle; }
+	/* Description: Returns a 'read only' pointer to the array of particle data
+	 */
+	const ParticleType* getParticleData() const					{ return particles.getArray(); }
+	/* Description: Returns the size of the particle array
+	 */
+	const unsigned int getNumParticles() const					{ return particles.getSize(); }
+	/* Description: Sets the coloring style to be used by the simulation
+	 */
+	void setColoringStyle(const ColoringStyle coloringStyle)	{ this->coloringStyle = coloringStyle; }
+	/* Description: Sets the particle factory to be used for particle generation
+	 */
+	void setParticleFactory(const AbstractParticleFactory<ParticleType>* particleFactory)
+	{ 
+		this->particleFactory = particleFactory; 
+	}
+
+	/* Description: Updates the particles
+	 * Parameters: Time since the last update was called
+	 */
+	virtual void update(const float deltaTime) = 0;				// Makes the class pure virtual
 
 	/* Description: Deallocated the space used by the variables
 	 */
 	void deallocate()
 	{
-		window->deallocate();
-		shaderProgram->deallocate();
-
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		if (EBO != NULL)
-			glDeleteBuffers(1, &EBO);
-
-		if (vertexData != nullptr)
-			delete[] vertexData;
-		if (indices != nullptr)
-			delete[] indices;
-
 		particles.deallocate();
 	}
 
 protected:
-	// OpenGL variables
-	OpenGLWindow* window;
-	ShaderProgram* shaderProgram;
-	unsigned int VAO;
-	unsigned int VBO;
-	unsigned int EBO;
-	float* vertexData;
-	unsigned int vertexDataSize;
-	unsigned int* indices;
-	unsigned int indicesSize;
-
-	// Simulation variables
 	DynamicArray<ParticleType> particles;	// Defaults to a capacity of 10 to start
 	AbstractParticleFactory<ParticleType>* particleFactory;
 	ColoringStyle coloringStyle;
-	float lastUpdateTime;
 };
 
 

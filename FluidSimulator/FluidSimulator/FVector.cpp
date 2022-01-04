@@ -1,7 +1,7 @@
 #include "FVector.h"
 
 /* Constructors / Destructors */
-FVector::FVector(unsigned int dimensions, float* values)
+FVector::FVector(const unsigned int dimensions, const float* values)
 {
 	if (dimensions == 0)
 		std::cout << "Warning: 0 dimensional vector created" << std::endl;
@@ -37,8 +37,29 @@ FVector::~FVector()
 /* Public Member Functions */
 unsigned int FVector::getDimensions() const { return dimensions; }
 float* FVector::getValues() const { return values; }
+float FVector::getLength() const
+{
+	float sum = 0;
+	for (int i = 0; i < dimensions; i++)
+		sum += pow(values[i], 2);
 
-void FVector::setDimensions(unsigned int dimensions)
+	return sqrt(sum);
+}
+
+float FVector::getDistance(const FVector& v) const
+{
+	float sum = 0;
+	for (int i = 0; i < dimensions; i++)
+	{
+		if (i < v.getDimensions())
+			sum += pow(values[i] - v.getValues()[i], 2);
+		else
+			sum += pow(values[i], 2);						// value - 0
+	}
+
+	return sqrt(sum);
+}
+void FVector::setDimensions(const unsigned int dimensions)
 {
 	if (this->dimensions > dimensions)					// shrink the vector
 	{
@@ -66,27 +87,38 @@ void FVector::setDimensions(unsigned int dimensions)
 	}
 }
 
-float FVector::getLength()
+glm::vec2 FVector::toGLMvec2() const
 {
-	float sum = 0;
-	for (int i = 0; i < dimensions; i++)
-		sum += pow(values[i], 2);
-
-	return sqrt(sum);
+	glm::vec2 returnVector(0.0f);
+	if (dimensions >= 1)
+		returnVector.x = values[0];
+	if (dimensions >= 2)
+		returnVector.y = values[1];
+	return returnVector;
 }
-
-float FVector::getDistance(const FVector& v)
+glm::vec3 FVector::toGLMvec3() const
 {
-	float sum = 0;
-	for (int i = 0; i < dimensions; i++)
-	{
-		if (i < v.getDimensions())
-			sum += pow(values[i] - v.getValues()[i], 2);
-		else
-			sum += pow(values[i], 2);						// value - 0
-	}
-
-	return sqrt(sum);
+	glm::vec3 returnVector(0.0f);
+	if (dimensions >= 1)
+		returnVector.x = values[0];
+	if (dimensions >= 2)
+		returnVector.y = values[1];
+	if (dimensions >= 3)
+		returnVector.z = values[2];
+	return returnVector;
+}
+glm::vec4 FVector::toGLMvec4() const
+{
+	glm::vec4 returnVector(0.0f);
+	if (dimensions >= 1)
+		returnVector.x = values[0];
+	if (dimensions >= 2)
+		returnVector.y = values[1];
+	if (dimensions >= 3)
+		returnVector.z = values[2];
+	if (dimensions >= 4)
+		returnVector.w = values[3];
+	return returnVector;
 }
 
 void FVector::normalize()

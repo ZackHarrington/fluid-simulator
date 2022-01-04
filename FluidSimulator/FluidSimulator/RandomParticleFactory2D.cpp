@@ -7,7 +7,7 @@ RandomParticleFactory2D::RandomParticleFactory2D()
 }
 
 /* Member Functions */
-DynamicArray<Particle2D>* RandomParticleFactory2D::generate(unsigned int numParticles)
+DynamicArray<Particle2D>* RandomParticleFactory2D::generate(const unsigned int numParticles)
 {
 	DynamicArray<Particle2D>* newParticleArray = new DynamicArray<Particle2D>(numParticles);
 
@@ -40,10 +40,16 @@ DynamicArray<Particle2D>* RandomParticleFactory2D::generate(unsigned int numPart
 
 		// Get a random velocity (that's slow enough to not be annoying)
 		velocity.getValues()[0] = (std::rand() > (RAND_MAX / 2) ? -1 : 1) *	// Negative or positive
-			(((float)std::rand() / (float)RAND_MAX) * 0.4f + 0.2f);			// between 0.2 and 0.6
+			(((float)std::rand() / (float)RAND_MAX) * 0.3f + 0.1f);			// between 0.1 and 0.4
 		velocity.getValues()[1] = (std::rand() > (RAND_MAX / 2) ? -1 : 1) * 
-			(((float)std::rand() / (float)RAND_MAX) * 0.4f + 0.2f);
+			(((float)std::rand() / (float)RAND_MAX) * 0.3f + 0.1f);
 		particle.setVelocity(velocity);
+
+		// Give the particles a random color
+		color.getValues()[0] = ((float)std::rand() / (float)RAND_MAX);
+		color.getValues()[1] = ((float)std::rand() / (float)RAND_MAX);
+		color.getValues()[2] = ((float)std::rand() / (float)RAND_MAX);
+		particle.setColor(color);
 
 		(*newParticleArray).insert(particle);
 	}

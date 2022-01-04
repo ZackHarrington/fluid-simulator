@@ -4,7 +4,9 @@
 #define OPENGLWINDOW_H
 
 #include "ShaderProgram.h"
-#include "FVector.h"
+#include "DynamicArray.h"
+#include "AbstractParticle.h"
+#include "ColoringStyle.h"
 
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
@@ -20,31 +22,55 @@ public:
 	/* Description: Initializes the window to the desired screen size, defaults to 512x512
 	 * Parameters: If fullScreen is true, width and height don't need to be specified
 	 */
-	OpenGLWindow(bool fullScreen, const char* title, unsigned int scrWidth = 512U, unsigned int scrHeight = 512U);
+	OpenGLWindow(const bool fullScreen, const char* title, 
+		const unsigned int scrWidth = 512U, const unsigned int scrHeight = 512U);
+	/* Description: Deallocates resources
+	 */
+	~OpenGLWindow();
 
-	/* Description: Draws / redraws the window with the specified vertex array and shader program
-	 * Parameters: numVertices should be the number of triangles * 3
+	/* Description: Draws the specified particles to the window
 	 */
-	void draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, unsigned int numVertices);
-	/* Description: Draws / redraws the window with the specified vertex array, shader program, and element array
-	 * Parameters: numVertices should be the number of triangles * 3, numElements should be 
-	 */
-	void draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, 
-		unsigned int numVertices, glm::vec3* elementPositions, unsigned int numElements);
+	void draw(const AbstractParticle* particles, const unsigned int numParticles,
+		const bool setOneToRed = false, ColoringStyle coloringStyle = ColoringStyle::DEFAULT_WHITE);
 
 	// Getters / Setters
 	/* Description: Returns whether the window should close or not
 	 */
 	bool shouldClose() const;
+	/* Description: Updates the screen width to the specified size
+	 */
+	void setScreenWidth(const unsigned int scrWidth);
+	/* Description: Updates the screen height to the specifed size
+	 */
+	void setScreenHeight(const unsigned int scrHeight);
+	/* DescriptionL Updates the screen to the specifed size
+	 */
+	void setScreenSize(const unsigned int scrWidth, const unsigned int scrHeight);
+	/* Description: Sets the VBO with a default particle
+	 * Parameters: To draw properly the particle should be centered at the origin and have a radius of 1.0,
+					all particles will be drawn as a scaled and mapped version of this particle
+	 */
+	void setVBOFromParticle(const AbstractParticle* particle, const unsigned int resolution, const bool useIndices = false);
 
 	/* Description: Deallocates resources used
 	 */
 	void deallocate();
 private:
+	// Window objects
 	unsigned int scrWidth;
 	unsigned int scrHeight;
 	GLFWwindow* window;
+
+	// Draw objects
+	ShaderProgram* shaderProgram;
+	unsigned int VAO;
+	unsigned int VBO;
+	unsigned int EBO;
+	bool useIndices;				// Defined in setVBOFromParticle function
+	unsigned int numElementsToDraw;	// ^
 	glm::mat4 model;
+	glm::mat4 view;
+	glm::mat4 projection;
 
 	/* Description: Called when an input device is used while the window is active
 	 */

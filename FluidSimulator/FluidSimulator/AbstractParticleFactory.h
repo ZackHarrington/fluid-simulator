@@ -15,10 +15,16 @@ public:
 	{
 		;
 	}
+	/* Description: Default destructor
+	 */
+	virtual ~AbstractParticleFactory()
+	{
+		;
+	}
 
 	/* Description: Generates and returns the initial particle array to be used at the start of a simulation
 	 */
-	virtual DynamicArray<ParticleType>* generate(unsigned int numParticles) = 0;
+	virtual DynamicArray<ParticleType>* generate(const unsigned int numParticles = 0) = 0;
 
 	/* Description: Generates and adds more particles to the array throughout the simulation
 	 *				Timing is controlled by the simulation

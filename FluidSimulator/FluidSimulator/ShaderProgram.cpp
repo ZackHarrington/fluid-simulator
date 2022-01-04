@@ -87,9 +87,41 @@ void ShaderProgram::setFloat(const std::string& name, float value) const
 {
     glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
 }
-void ShaderProgram::set4x4Matrix(const std::string& name, GLboolean transpose, glm::mat4* matrix) const
+void ShaderProgram::setVec2(const std::string& name, const glm::vec2& value) const
 {
-    glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, transpose, glm::value_ptr(*matrix));
+    glUniform2fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
+}
+void ShaderProgram::setVec2(const std::string& name, float x, float y) const
+{
+    glUniform2f(glGetUniformLocation(programID, name.c_str()), x, y);
+}
+void ShaderProgram::setVec3(const std::string& name, const glm::vec3& value) const
+{
+    glUniform3fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
+}
+void ShaderProgram::setVec3(const std::string& name, float x, float y, float z) const
+{
+    glUniform3f(glGetUniformLocation(programID, name.c_str()), x, y, z);
+}
+void ShaderProgram::setVec4(const std::string& name, const glm::vec4& value) const
+{
+    glUniform4fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
+}
+void ShaderProgram::setVec4(const std::string& name, float x, float y, float z, float w) const
+{
+    glUniform4f(glGetUniformLocation(programID, name.c_str()), x, y, z, w);
+}
+void ShaderProgram::setMat2(const std::string& name, const GLboolean transpose, const glm::mat2& mat) const
+{
+    glUniformMatrix2fv(glGetUniformLocation(programID, name.c_str()), 1, transpose, &mat[0][0]);
+}
+void ShaderProgram::setMat3(const std::string& name, const GLboolean transpose, const glm::mat3& mat) const
+{
+    glUniformMatrix3fv(glGetUniformLocation(programID, name.c_str()), 1, transpose, &mat[0][0]);
+}
+void ShaderProgram::setMat4(const std::string& name, const GLboolean transpose, const glm::mat4& mat) const
+{
+    glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, transpose, &mat[0][0]);
 }
 
 // Deallocate at end of program

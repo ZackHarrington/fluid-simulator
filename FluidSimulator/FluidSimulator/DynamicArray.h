@@ -3,7 +3,6 @@
 #ifndef DYNAMICPARTICLEARRAY_H
 #define DYNAMICPARTICLEARRAY_H
 
-#include "AbstractParticle.h"
 #include <iostream>
 
 template <typename T>
@@ -21,7 +20,7 @@ public:
 	/* Description: Creats a dynamic array of element T with the specified starting capacity
 	 *				(Reduces possible time consumed reallocating space when making large arrays)
 	 */
-	DynamicArray(unsigned int capacity)
+	DynamicArray(const unsigned int capacity)
 	{
 		this->capacity = capacity;
 		this->lastElementIndex = -1;
@@ -43,20 +42,23 @@ public:
 	 */
 	~DynamicArray()
 	{
-		this->deallocate();
+		deallocate();
 	}
 
 	// Getters / setters
 	/* Description: Returns the max capacity of the array
 	 */
-	unsigned int getCapacity() { return capacity; }
+	unsigned int getCapacity() const	{ return capacity; }
 	/* Description: Returns the size / length of the array
 	 */
-	unsigned int getSize() { return lastElementIndex + 1; }
+	unsigned int getSize() const		{ return lastElementIndex + 1; }
+	/* Description: Returns the dynamic array for 'read only'
+	 */
+	const T* getArray() const			{ return dynamicArray; }
 	/* Description: Reallocates space to accomidate the new capacity
 	 * Warning: If the capacity specified is less than the current capacity elements may be lost!
 	 */
-	void setCapacity(unsigned int capacity) 
+	void setCapacity(const unsigned int capacity) 
 	{
 		T* temp = dynamicArray;
 		allocateMemory(capacity);
@@ -78,7 +80,7 @@ public:
 
 	/* Description: Insert data at the front of the array
 	 */
-	void insert(T data)
+	void insert(const T data)
 	{
 		// Expand capacity if necessary
 		if ((lastElementIndex + 1) >= capacity)
@@ -97,7 +99,7 @@ public:
 	/* Description: Removes a specific piece of data from the array, searches starting from the back, will only remove first from the back
 	 * Returns: true if the data was removed successfully, false if the data specified was not in the array
 	 */
-	bool remove(T data)
+	bool remove(const T data)
 	{
 		int index = -1;
 		// Find data
@@ -124,6 +126,10 @@ public:
 		}
 	}
 
+	void deallocate()
+	{
+		delete[] dynamicArray;
+	}
 
 	// Overloaded operator
 	DynamicArray<T>& operator= (const DynamicArray<T>& copy)
@@ -139,12 +145,6 @@ public:
 		return *this;
 	}
 
-	/* Description: Deallocates the space used by the array
-	 */
-	void deallocate()
-	{
-		delete[] dynamicArray;
-	}
 private:
 	unsigned int capacity;
 	int lastElementIndex;									// size - 1
@@ -153,7 +153,7 @@ private:
 	/* Description: Attempts to allocate the specified ammount of memory in the stack, logs an error if unable to
 	 * Warning: Does not adjust the capacity variable!
 	 */
-	void allocateMemory(unsigned int capacity)
+	void allocateMemory(const unsigned int capacity)
 	{
 		deallocate();
 		this->dynamicArray = new(std::nothrow) T[capacity];

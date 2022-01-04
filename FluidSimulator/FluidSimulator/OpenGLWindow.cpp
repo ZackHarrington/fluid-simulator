@@ -1,13 +1,10 @@
 #include "OpenGLWindow.h"
 
 /* Constructor */
-OpenGLWindow::OpenGLWindow(bool fullScreen, const char* title, unsigned int scrWidth, unsigned int scrHeight)
+OpenGLWindow::OpenGLWindow(const bool fullScreen, const const char* title,
+    const unsigned int scrWidth, const unsigned int scrHeight)
 {
-    // Initialize our variables
-    this->scrWidth = scrWidth;
-    this->scrHeight = scrWidth;
-    this->model = glm::mat4(1.0f);
-
+    // Initialize OpenGL and the window object ---
     // Initialize GLFW
     glfwInit();
     // Configure GLFW with Core Profile
@@ -43,62 +40,86 @@ OpenGLWindow::OpenGLWindow(bool fullScreen, const char* title, unsigned int scrW
 
     // Don't want no pesky back triangles overwriting the front ones
     glEnable(GL_DEPTH_TEST);
+    // ---
+
+
+    // Initialize object variables ---
+    this->scrWidth = scrWidth;
+    this->scrHeight = scrWidth;
+
+    // Initialize Shaders using local file paths
+    shaderProgram = new ShaderProgram("vertexShader.vs", "fragmentShader.fs");
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+    useIndices = false;
+    numElementsToDraw = 0;
+
+    this->model = glm::mat4(1.0f);
+    this->view = glm::mat4(1.0f);
+    this->projection = glm::mat4(1.0f);
+}
+OpenGLWindow::~OpenGLWindow()
+{
+    deallocate();
 }
 
 
-/* Public member functions */
-void OpenGLWindow::draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, unsigned int numVertices)
+void OpenGLWindow::draw(const AbstractParticle* particles, const unsigned int numParticles, 
+    bool setOneToRed, ColoringStyle coloringStyle)
 {
     // Input
     processInput(window);
 
     // Rendering commands
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);                               // color to clear the screen with
+    glClearColor(0.0f, 0.0625f, 0.125f, 1.0f);                            // color to clear the screen with
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                 // clear the screen
 
     // Activate shader
     shaderProgram->use();
 
-    // Apply 3d transformations
-    shaderProgram->set4x4Matrix("model", GL_FALSE, &model);
-
-    // Draw
-    glBindVertexArray(VAO);
-    if (useIndices)
-        glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
-    else
-        glDrawArrays(GL_TRIANGLES, 0, numVertices);
-
-    // Check events and swap buffers
-    glfwPollEvents();                       // checks if any events were tiggered (resizing, etc.)
-    glfwSwapBuffers(window);                // swap the front and back buffers
-}
-void OpenGLWindow::draw(ShaderProgram* shaderProgram, unsigned int VAO, bool useIndices, 
-    unsigned int numVertices, glm::vec3* elementPositions, unsigned int numElements)
-{
-    // Input
-    processInput(window);
-
-    // Rendering commands
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);                               // color to clear the screen with
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                 // clear the screen
-
-    // Activate shader
-    shaderProgram->use();
-
-    glBindVertexArray(VAO);
-    for (int i = 0; i < numElements; i++)
+    for (int i = 0; i < numParticles; i++)
     {
         // Apply 3d transformations
         model = glm::mat4(1.0f);
-        model = glm::translate(model, elementPositions[i]);
-        shaderProgram->set4x4Matrix("model", GL_FALSE, &model);
+        model = glm::translate(model, particles[i].getPosition().toGLMvec3());
+        model = glm::scale(model, glm::vec3(particles[i].getRadius()));
+        shaderProgram->setMat4("model", GL_FALSE, model);
+        shaderProgram->setMat4("view", GL_FALSE, view);
+        shaderProgram->setMat4("projection", GL_FALSE, projection);
+
+        // Set color
+        if (setOneToRed && (i == 0))
+            shaderProgram->setVec3("color", 1.0f, 0.0f, 0.0f);
+        else
+        {
+            switch (coloringStyle)
+            {
+            case ColoringStyle::DEFAULT_WHITE:
+                shaderProgram->setVec3("color", 1.0f, 1.0f, 1.0f);
+                break;
+            case ColoringStyle::DEFAULT_FACTORY:
+                shaderProgram->setVec3("color", particles[i].getColor().toGLMvec3());
+                break;
+            case ColoringStyle::SPEED_BLUE:
+                shaderProgram->setVec3("color", glm::vec3(0.5f) + glm::vec3(1.0f) - 
+                    (1 - particles[i].getVelocity().getLength()) * (glm::vec3(1.0f) - glm::vec3(0.0f, 1.0f, 1.0f)));
+                break;
+            case ColoringStyle::SPEED_FACTORY:
+                break;
+            default:
+                shaderProgram->setVec3("color", 0.0f, 0.0f, 0.0f);
+                break;
+            }
+        }
 
         // Draw
+        glBindVertexArray(VAO);
         if (useIndices)
-            glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
+            glDrawElements(GL_TRIANGLES, numElementsToDraw, GL_UNSIGNED_INT, 0);
         else
-            glDrawArrays(GL_TRIANGLES, 0, numVertices);
+            glDrawArrays(GL_TRIANGLES, 0, numElementsToDraw);
     }
 
     // Check events and swap buffers
@@ -106,13 +127,60 @@ void OpenGLWindow::draw(ShaderProgram* shaderProgram, unsigned int VAO, bool use
     glfwSwapBuffers(window);                // swap the front and back buffers
 }
 
-bool OpenGLWindow::shouldClose() const
+bool OpenGLWindow::shouldClose() const { return glfwWindowShouldClose(window); }
+void OpenGLWindow::setScreenWidth(const unsigned int scrWidth) 
+{ 
+    this->scrWidth = scrWidth;
+    glViewport(0, 0, this->scrWidth, this->scrHeight);
+}
+void OpenGLWindow::setScreenHeight(const unsigned int scrHeight) 
+{ 
+    this->scrHeight = scrHeight;
+    glViewport(0, 0, this->scrWidth, this->scrHeight);
+}
+void OpenGLWindow::setScreenSize(const unsigned int scrWidth, const unsigned int scrHeight)
 {
-    return glfwWindowShouldClose(window);
+    this->scrWidth = scrWidth;
+    this->scrHeight = scrHeight;
+    glViewport(0, 0, this->scrWidth, this->scrHeight);
+}
+void OpenGLWindow::setVBOFromParticle(const AbstractParticle* particle, const unsigned int resolution, const bool useIndices)
+{
+    // Set draw variables
+    this->useIndices = useIndices;
+    this->numElementsToDraw = resolution * 3;
+
+    // Get vertex and index data
+    unsigned int* indices = nullptr;
+    unsigned int indicesSize = 0;
+    unsigned int vertexDataSize = 0;
+    float* vertexData = particle->generateOpenGLVertices(
+        resolution, false, &vertexDataSize, useIndices, &indicesSize, &indices);
+
+    // Place vertices into the VAO
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexDataSize, vertexData, GL_STREAM_DRAW);
+
+    if (useIndices)
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indicesSize, indices, GL_STATIC_DRAW);
+    }
+
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 }
 
 void OpenGLWindow::deallocate() 
 {
+    shaderProgram->deallocate();
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+
     // Properly cleans and deletes all resources allocated to GLFW after the window is closed
     glfwTerminate();
 }

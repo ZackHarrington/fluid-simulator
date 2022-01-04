@@ -1,7 +1,8 @@
 #include "Particle2D.h"
 
-float* Particle2D::generateOpenGLVertices(unsigned int resolution, bool includeColor, unsigned int* vertexDataSize,
-	bool includeIndices, unsigned int* indicesSize, unsigned int** indices)
+float* Particle2D::generateOpenGLVertices(const unsigned int resolution, const bool includeColor,
+	unsigned int* vertexDataSize, const bool includeIndices, 
+	unsigned int* indicesSize, unsigned int** indices) const
 {
 	unsigned int resolutionToUse = resolution;
 	if (resolution < 3) {
@@ -37,14 +38,15 @@ float* Particle2D::generateOpenGLVertices(unsigned int resolution, bool includeC
 		// Fill vertices loop
 		for (int i = 1; i <= resolutionToUse; i++)				// start at 1 because we already added the center
 		{
-			vertexData[6 * i]	  = position.getValues()[0] + radius * cos(radiansPerSlice * (i - 1));
-			vertexData[6 * i + 1] = position.getValues()[1] + radius * sin(radiansPerSlice * (i - 1));
-			vertexData[6 * i + 2] = 0.0f;
+			int index = 3 * (includeColor ? 2 : 1) * i;
+			vertexData[index]	  = position.getValues()[0] + radius * cos(radiansPerSlice * (i - 1));
+			vertexData[index + 1] = position.getValues()[1] + radius * sin(radiansPerSlice * (i - 1));
+			vertexData[index + 2] = 0.0f;
 			if (includeColor)
 			{
-				vertexData[6 * i + 3] = color.getValues()[0];
-				vertexData[6 * i + 4] = color.getValues()[1];
-				vertexData[6 * i + 5] = color.getValues()[2];
+				vertexData[index + 3] = color.getValues()[0];
+				vertexData[index + 4] = color.getValues()[1];
+				vertexData[index + 5] = color.getValues()[2];
 			}
 		}
 
@@ -112,7 +114,7 @@ float* Particle2D::generateOpenGLVertices(unsigned int resolution, bool includeC
 }
 
 // Temporary
-FVector Particle2D::getNextUpdatePosition(float timeMultiplier)
+FVector Particle2D::getNextUpdatePosition(const float timeMultiplier)
 {
 	return position + velocity * timeMultiplier;
 }
