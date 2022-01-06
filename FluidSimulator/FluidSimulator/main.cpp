@@ -4,7 +4,7 @@
 
 int main() {
 	/* Init */															// *** Adjustable settings ***
-	Simulation2D simulation(ColoringStyle::DEFAULT_FACTORY, 100U);		// coloring style, number of particles
+	Simulation2D simulation(ColoringStyle::SPEED_FACTORY, 150U);		// coloring style, number of particles
 	OpenGLWindow drawWindow(false, "Title goes here", 1024U, 1024U);	// fullscreen, title, screen width, screen height
 	float lastTime = glfwGetTime();
 	float deltaTime = 0;
@@ -16,7 +16,8 @@ int main() {
 	drawWindow.setVBOFromParticle(&basicParticle, resolution, true);
 
 	/* Main loop */
-	while (!drawWindow.shouldClose()) {
+	while (!drawWindow.shouldClose()) 
+	{
 		// Check the change in time
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastTime;

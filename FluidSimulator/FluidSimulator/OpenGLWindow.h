@@ -75,6 +75,21 @@ private:
 	/* Description: Called when an input device is used while the window is active
 	 */
 	void processInput(GLFWwindow* window);
+
+	/* Description: Converts a RGB value to HSV
+	 */
+	glm::vec3 toHSV(const glm::vec3 RGB);
+	/* Description: Returns the corresponding Hue value of a RGB color
+	 */
+	float getHue(const glm::vec3 RGB);
+	/* Description: Converts a HSV value to RGB
+	 */
+	glm::vec3 toRGB(const glm::vec3 HSV);
+
+	/* Description: Clamps values outside of the range to the high and low values
+	 * Couldn't get visual studio to recognise std::clamp as a function so here's my implementation
+	 */
+	void clamp(float& value, const float& low, const float& high);
 };
 
 /* Description: Called whenever the user resizes the window

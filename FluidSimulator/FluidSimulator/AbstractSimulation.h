@@ -38,7 +38,7 @@ public:
 	const ParticleType* getParticleData() const					{ return particles.getArray(); }
 	/* Description: Returns the size of the particle array
 	 */
-	const unsigned int getNumParticles() const					{ return particles.getSize(); }
+	unsigned int getNumParticles() const					{ return particles.getSize(); }
 	/* Description: Sets the coloring style to be used by the simulation
 	 */
 	void setColoringStyle(const ColoringStyle coloringStyle)	{ this->coloringStyle = coloringStyle; }

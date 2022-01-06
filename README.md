@@ -16,3 +16,6 @@ Before you run, make sure:
 
 Troubleshooting:
  - Sometimes CL.exe won't work, usually you're already running the program so close and simply rebuild and it should be fixed
+
+To-do:
+ - Implement more accurate math for particle collisions
