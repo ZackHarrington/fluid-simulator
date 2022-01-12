@@ -31,7 +31,7 @@ public:
 	/* Description: Draws the specified particles to the window
 	 */
 	void draw(const AbstractParticle* particles, const unsigned int numParticles,
-		const bool setOneToRed = false, ColoringStyle coloringStyle = ColoringStyle::DEFAULT_WHITE);
+		const bool setOneToRed = false, const ColoringStyle coloringStyle = ColoringStyle::DEFAULT_WHITE);
 
 	// Getters / Setters
 	/* Description: Returns whether the window should close or not
@@ -76,20 +76,27 @@ private:
 	 */
 	void processInput(GLFWwindow* window);
 
+	/* Dscription: Set's the shader color based on the ColoringStyle
+	 */
+	void setColor(const AbstractParticle& particle, const ColoringStyle coloringStyle);
+
 	/* Description: Converts a RGB value to HSV
+	 *				Where (0 <= R,G,B <= 1) and (0 <= H <= 360, 0 <= S,V <= 1)
 	 */
 	glm::vec3 toHSV(const glm::vec3 RGB);
 	/* Description: Returns the corresponding Hue value of a RGB color
+	 *				Where (0 <= R,G,B <= 1) and (0 <= H <= 360)
 	 */
 	float getHue(const glm::vec3 RGB);
-	/* Description: Converts a HSV value to RGB
+	/* Description: Converts a HSV value to RGB, with (0 <= H <= 360, 0 <= S,V <= 1)
+	 *				Where (0 <= R,G,B <= 1) and (0 <= H <= 360, 0 <= S,V <= 1)
 	 */
 	glm::vec3 toRGB(const glm::vec3 HSV);
 
 	/* Description: Clamps values outside of the range to the high and low values
 	 * Couldn't get visual studio to recognise std::clamp as a function so here's my implementation
 	 */
-	void clamp(float& value, const float& low, const float& high);
+	float& clamp(float& value, const float& low, const float& high);
 };
 
 /* Description: Called whenever the user resizes the window

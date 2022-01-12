@@ -128,7 +128,11 @@ public:
 
 	void deallocate()
 	{
-		delete[] dynamicArray;
+		if (!deleted)
+		{
+			deleted = true;
+			delete[] dynamicArray;
+		}
 	}
 
 	// Overloaded operator
@@ -149,6 +153,7 @@ private:
 	unsigned int capacity;
 	int lastElementIndex;									// size - 1
 	T* dynamicArray;
+	bool deleted;
 
 	/* Description: Attempts to allocate the specified ammount of memory in the stack, logs an error if unable to
 	 * Warning: Does not adjust the capacity variable!
@@ -156,6 +161,7 @@ private:
 	void allocateMemory(const unsigned int capacity)
 	{
 		deallocate();
+		deleted = false;
 		this->dynamicArray = new(std::nothrow) T[capacity];
 		if (this->dynamicArray == nullptr)
 			std::cout << "Error: Unable to allocate memory for DynamicArray" << std::endl;

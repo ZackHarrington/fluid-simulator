@@ -145,6 +145,7 @@
     <ClCompile Include="AbstractParticle.cpp" />
     <ClCompile Include="FVector.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OpenGLWindow.cpp" />
     <ClCompile Include="Particle2D.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="ColoringStyle.h" />
     <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="FVector.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="OpenGLWindow.h" />
     <ClInclude Include="Particle2D.h" />
     <ClInclude Include="RandomParticleFactory2D.h" />

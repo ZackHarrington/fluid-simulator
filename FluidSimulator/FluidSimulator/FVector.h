@@ -45,6 +45,9 @@ public:
 	 * Warning: Will add 0 values if specified dimensions are higher than current dimensions!
 	 */
 	void setDimensions(const unsigned int dimensions);
+	// Overloaded bracket operators
+	float operator [](int i) const { return values[i]; }	// Gets the value
+	float& operator [](int i) { return values[i]; }			// Gets the value by reference so you can set it with the = sign
 
 	/* Description: Returns the float vector as a glm::vec2, will add 0.0f values when dimensions are smaller than 2
 	 * Warning: May not be able to report all dimensions if there are more than 2!
@@ -64,16 +67,16 @@ public:
 	void normalize();
 
 	// Overloaded operators - need to be pass by reference
-	FVector operator+ (const FVector& v);
-	FVector operator+ (const float& value);
-	FVector operator- (const FVector& v);
-	FVector operator- (const float& value);
-	float operator* (const FVector& v);		// Acts like the dot product
-	FVector operator* (const float& value);
-	FVector operator/ (const float& value);
+	FVector operator+ (const FVector& v) const;
+	FVector operator+ (const float& value) const;
+	FVector operator- (const FVector& v) const;
+	FVector operator- (const float& value) const;
+	float operator* (const FVector& v) const;		// Acts like the dot product
+	FVector operator* (const float& value) const;
+	FVector operator/ (const float& value) const;
 	FVector& operator= (const FVector& copy);
-	bool operator== (const FVector& v);
-	bool operator!= (const FVector& v);
+	bool operator== (const FVector& v) const;
+	bool operator!= (const FVector& v) const;
 private:
 	unsigned int dimensions;
 	float* values;

@@ -67,14 +67,14 @@ OpenGLWindow::~OpenGLWindow()
 
 
 void OpenGLWindow::draw(const AbstractParticle* particles, const unsigned int numParticles, 
-    bool setOneToRed, ColoringStyle coloringStyle)
+    const bool setOneToRed, const ColoringStyle coloringStyle)
 {
     // Input
     processInput(window);
 
     // Rendering commands
-    glClearColor(0.0f, 0.0625f, 0.125f, 1.0f);                            // color to clear the screen with
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                 // clear the screen
+    glClearColor(0.0f, 0.0625f, 0.125f, 1.0f);              // color to clear the screen with
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     // clear the screen
 
     // Activate shader
     shaderProgram->use();
@@ -94,41 +94,7 @@ void OpenGLWindow::draw(const AbstractParticle* particles, const unsigned int nu
             shaderProgram->setVec3("color", 1.0f, 0.0f, 0.0f);
         else
         {
-            // Just so visual studio doesn't get mad if I need to declare a variable in a case statement
-            float value = 0.0f;
-            switch (coloringStyle)
-            {
-            case ColoringStyle::DEFAULT_WHITE:
-                shaderProgram->setVec3("color", 1.0f, 1.0f, 1.0f);
-                break;
-            case ColoringStyle::DEFAULT_FACTORY:
-                shaderProgram->setVec3("color", particles[i].getColor().toGLMvec3());
-                break;
-            case ColoringStyle::SPEED_BLUE:
-                value = particles[i].getVelocity().getLength();
-                clamp(value, 0.0f, 1.0f);
-                /* Squares the value to get a greater fall off,
-                 * thus causing only the fastest to be whiter, with the rest more blue 
-                 * and the slowest to be darker (lower value)
-                 */
-                shaderProgram->setVec3("color",
-                    toRGB(glm::vec3(((1.0f - value) * 20.0f + 200.0f) / 360.0f, 
-                        1.0f - pow(value, 2), 
-                        1.0f - (pow((1.0f - value), 2) * 0.75f) ) ) );
-                break;
-            case ColoringStyle::SPEED_FACTORY:
-                // Make way to find average velocity                 ??
-                value = particles[i].getVelocity().getLength();
-                clamp(value, 0.0f, 1.0f);
-                shaderProgram->setVec3("color",
-                    toRGB(glm::vec3(getHue(particles[i].getColor().toGLMvec3()) / 360.0f,
-                        1.0f - pow(value, 2),
-                        1.0f - (pow((1.0f - value), 2) * 0.75f))));
-                break;
-            default:
-                shaderProgram->setVec3("color", 0.0f, 0.0f, 0.0f);
-                break;
-            }
+            setColor(particles[i], coloringStyle);
         }
 
         // Draw
@@ -140,8 +106,8 @@ void OpenGLWindow::draw(const AbstractParticle* particles, const unsigned int nu
     }
 
     // Check events and swap buffers
-    glfwPollEvents();                       // checks if any events were tiggered (resizing, etc.)
-    glfwSwapBuffers(window);                // swap the front and back buffers
+    glfwPollEvents();                                       // checks if any events were tiggered (resizing, etc.)
+    glfwSwapBuffers(window);                                // swap the front and back buffers
 }
 
 bool OpenGLWindow::shouldClose() const { return glfwWindowShouldClose(window); }
@@ -216,9 +182,67 @@ void OpenGLWindow::processInput(GLFWwindow* window)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+void OpenGLWindow::setColor(const AbstractParticle& particle, const ColoringStyle coloringStyle)
+{
+    // Just so visual studio doesn't get mad if I need to declare a variable in a case statement
+    float value = 0.0f;
+    switch (coloringStyle)
+    {
+    case ColoringStyle::DEFAULT_WHITE:
+        shaderProgram->setVec3("color", 1.0f, 1.0f, 1.0f);
+        break;
+    case ColoringStyle::DEFAULT_FACTORY:
+        shaderProgram->setVec3("color", particle.getColor().toGLMvec3());
+        break;
+    case ColoringStyle::SPEED_BLUE:
+        value = particle.getVelocity().getLength();
+        clamp(value, 0.0f, 1.0f);
+        /* Squares the value to get a greater fall off,
+         * thus causing only the fastest to be whiter, with the rest more blue
+         * and the slowest to be darker (lower value)
+         */
+        shaderProgram->setVec3("color",
+            toRGB(glm::vec3(((1.0f - value) * 20.0f + 200.0f),
+                1.0f - pow(value, 2),
+                1.0f - (pow((1.0f - value), 2) * 0.75f))));
+        break;
+    case ColoringStyle::SPEED_FACTORY:
+        value = particle.getVelocity().getLength();
+        clamp(value, 0.0f, 1.0f);
+        shaderProgram->setVec3("color",
+            toRGB(glm::vec3(getHue(particle.getColor().toGLMvec3()),
+                1.0f - pow(value, 2),
+                1.0f - (pow((1.0f - value), 2) * 0.75f))));
+        break;
+    default:
+        shaderProgram->setVec3("color", 0.0f, 0.0f, 0.0f);
+        break;
+    }
+}
+
 glm::vec3 OpenGLWindow::toHSV(const glm::vec3 RGB)
 {
-    return glm::vec3(1.0f);
+    float Hue = 0.0f, Saturation = 0.0f;
+    float max = fmax(fmax(RGB.r, RGB.g), RGB.b);
+    float min = fmin(fmin(RGB.r, RGB.g), RGB.b);
+    // Hue
+    if (RGB.r == max)
+        Hue = 0.0f + (RGB.g - RGB.b) / (max - min);
+    else if (RGB.g == max)
+        Hue = 2.0f + (RGB.b - RGB.r) / (max - min);
+    else // blue is max
+        Hue = 4.0f + (RGB.r - RGB.g) / (max - min);
+    Hue *= 60;
+    if (Hue < 0)
+        Hue += 360;
+    // Saturation
+    if (max == 0)
+        Saturation = 0;
+    else
+        Saturation = (max - min) / max;
+    // Value = max
+
+    return glm::vec3(Hue, Saturation, max);
 }
 float OpenGLWindow::getHue(const glm::vec3 RGB)
 {
@@ -241,10 +265,10 @@ float OpenGLWindow::getHue(const glm::vec3 RGB)
 }
 glm::vec3 OpenGLWindow::toRGB(const glm::vec3 HSV)
 {
-    float H = HSV.x * 360, S = HSV.y, V = HSV.z;
+    float H = HSV.x, S = HSV.y, V = HSV.z;
     float C = V * S;
     // X = C * (1 - |(H / 60) % 2 - 1|), when 0 <= H <= 360,
-    float X = C * (1 - abs(fmod(H/60, 2) - 1));        // mod needs integer division
+    float X = C * (1 - abs(fmod(H/60, 2) - 1));             // mod needs integer division
     float m = V - C;
     float Rprime, Gprime, Bprime;
     if (H < 60)         { Rprime = C; Gprime = X; Bprime = 0; }
@@ -257,12 +281,13 @@ glm::vec3 OpenGLWindow::toRGB(const glm::vec3 HSV)
     return  glm::vec3(Rprime + m, Gprime + m, Bprime + m);
 }
 
-void OpenGLWindow::clamp(float& value, const float& low, const float& high)
+float& OpenGLWindow::clamp(float& value, const float& low, const float& high)
 {
     if (value < low)
         value = low;
     if (value > high)
         value = high;
+    return value;
 }
 
 

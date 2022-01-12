@@ -25,28 +25,28 @@ float* Particle2D::generateOpenGLVertices(const unsigned int resolution, const b
 		vertexData = new float[numFloats];
 
 		// Add center vertex
-		vertexData[0] = position.getValues()[0];				// x
-		vertexData[1] = position.getValues()[1];				// y
+		vertexData[0] = position[0];				// x
+		vertexData[1] = position[1];				// y
 		vertexData[2] = 0.0f;									// z
 		if (includeColor)
 		{
-			vertexData[3] = color.getValues()[0];				// R
-			vertexData[4] = color.getValues()[1];				// G
-			vertexData[5] = color.getValues()[2];				// B
+			vertexData[3] = color[0];				// R
+			vertexData[4] = color[1];				// G
+			vertexData[5] = color[2];				// B
 		}
 
 		// Fill vertices loop
 		for (int i = 1; i <= resolutionToUse; i++)				// start at 1 because we already added the center
 		{
 			int index = 3 * (includeColor ? 2 : 1) * i;
-			vertexData[index]	  = position.getValues()[0] + radius * cos(radiansPerSlice * (i - 1));
-			vertexData[index + 1] = position.getValues()[1] + radius * sin(radiansPerSlice * (i - 1));
+			vertexData[index]	  = position[0] + radius * cos(radiansPerSlice * (i - 1));
+			vertexData[index + 1] = position[1] + radius * sin(radiansPerSlice * (i - 1));
 			vertexData[index + 2] = 0.0f;
 			if (includeColor)
 			{
-				vertexData[index + 3] = color.getValues()[0];
-				vertexData[index + 4] = color.getValues()[1];
-				vertexData[index + 5] = color.getValues()[2];
+				vertexData[index + 3] = color[0];
+				vertexData[index + 4] = color[1];
+				vertexData[index + 5] = color[2];
 			}
 		}
 
@@ -85,53 +85,32 @@ float* Particle2D::generateOpenGLVertices(const unsigned int resolution, const b
 				switch (j)
 				{
 				case 0:											// first vertex is the center
-					vertexData[index]     = position.getValues()[0];
-					vertexData[index + 1] = position.getValues()[1];
+					vertexData[index]     = position[0];
+					vertexData[index + 1] = position[1];
 					vertexData[index + 2] = 0.0f;
 					break;
 				case 1:											// second is the first outer vertex
-					vertexData[index]     = position.getValues()[0] + radius * cos(radiansPerSlice * i);
-					vertexData[index + 1] = position.getValues()[1] + radius * sin(radiansPerSlice * i);
+					vertexData[index]     = position[0] + radius * cos(radiansPerSlice * i);
+					vertexData[index + 1] = position[1] + radius * sin(radiansPerSlice * i);
 					vertexData[index + 2] = 0.0f;
 					break;
 				case 2:											// third is the second outer vertex
-					vertexData[index]     = position.getValues()[0] + radius * cos(radiansPerSlice * (i + 1));
-					vertexData[index + 1] = position.getValues()[1] + radius * sin(radiansPerSlice * (i + 1));
+					vertexData[index]     = position[0] + radius * cos(radiansPerSlice * (i + 1));
+					vertexData[index + 1] = position[1] + radius * sin(radiansPerSlice * (i + 1));
 					vertexData[index + 2] = 0.0f;
 					break;
 				}
 				if (includeColor)
 				{
-					vertexData[index + 3] = color.getValues()[0];
-					vertexData[index + 4] = color.getValues()[1];
-					vertexData[index + 5] = color.getValues()[2];
+					vertexData[index + 3] = color[0];
+					vertexData[index + 4] = color[1];
+					vertexData[index + 5] = color[2];
 				}
 			}
 		}
 	}
 
 	return vertexData;
-}
-
-// Temporary
-FVector Particle2D::getNextUpdatePosition(const float timeMultiplier)
-{
-	return position + velocity * timeMultiplier;
-}
-
-void Particle2D::particleCollision(Particle2D& p)
-{
-	// From wikipedia
-	// v1' = v1 - 2*m2/(m1+m2) * ((v1 - v2) dot (x1 - x2)) / (||x1 - x2||^2) * (x1 - x2)
-	// v2' = v2 - 2*m1/(m1+m2) * ((v2 - v1) dot (x2 - x1)) / (||x2 - x1||^2) * (x2 - x1)
-	// need to swap around the last * (x1 - x2) to fit my overloaded operators
-	FVector v1prime = velocity - (position - p.getPosition()) * (((2 * p.getMass()) / (mass + p.getMass())) *
-		((velocity - p.getVelocity()) * (position - p.getPosition())) / pow((position - p.getPosition()).getLength(), 2));
-	FVector v2prime = p.getVelocity() - (p.getPosition() - position) * (((2 * mass) / (mass + p.getMass())) *
-		((p.getVelocity() - velocity) * (p.getPosition() - position)) / pow((p.getPosition() - position).getLength(), 2));
-
-	setVelocity(v1prime);
-	p.setVelocity(v2prime);
 }
 
 // Overloaded operators

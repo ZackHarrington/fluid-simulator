@@ -59,7 +59,11 @@ public:
 	 */
 	void setColor(const FVector color);
 
+	/* Description: Returns the position the particle will end up at, should nothing change
+	 */
+	virtual FVector nextUpdatePosition(const float timeMultiplier);
 	/* Description: Updates the particle based on it's velocity and the time elapsed
+	 * Note: Calls nextUpdatePosition by default so update doesn't need to be overridden if not necessary
 	 */
 	virtual void update(const float timeMultiplier);
 

@@ -4,6 +4,8 @@
 #define PARTICLE2D_H
 
 #include "AbstractParticle.h"
+#include "Line.h"
+
 #include <math.h>
 
 class Particle2D : public AbstractParticle
@@ -27,15 +29,6 @@ public:
 	virtual float* generateOpenGLVertices(const unsigned int resolution, const bool includeColor, 
 		unsigned int* vertexDataSize, const bool includeIndices = false, 
 		unsigned int* indicesSize = nullptr, unsigned int** indices = nullptr) const override;
-
-	// Temporary
-	FVector getNextUpdatePosition(const float timeMultiplier);
-
-	/* Description: Computes the new velocities for the two colliding particles 
-	 */
-	void particleCollision(Particle2D& p);
-
-	//void lineCollision()
 
 	// Overloaded operators
 	bool operator== (const Particle2D& p);

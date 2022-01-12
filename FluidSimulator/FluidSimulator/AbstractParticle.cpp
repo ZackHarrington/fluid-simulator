@@ -42,7 +42,11 @@ void AbstractParticle::setPosition(const FVector position)	{ this->position = po
 void AbstractParticle::setVelocity(const FVector velocity)	{ this->velocity = velocity; }
 void AbstractParticle::setColor(const FVector color)		{ this->color = color; }
 
+FVector AbstractParticle::nextUpdatePosition(const float timeMultiplier)
+{
+	return position + velocity * timeMultiplier;
+}
 void AbstractParticle::update(const float timeMultiplier)
 {
-	position = position + velocity * timeMultiplier;
+	position = nextUpdatePosition(timeMultiplier);
 }

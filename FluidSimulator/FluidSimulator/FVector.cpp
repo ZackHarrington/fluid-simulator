@@ -130,7 +130,7 @@ void FVector::normalize()
 }
 
 // Overloaded operators
-FVector FVector::operator+ (const FVector& v)
+FVector FVector::operator+ (const FVector& v) const
 {
 	if (dimensions != v.getDimensions())
 	{
@@ -144,7 +144,7 @@ FVector FVector::operator+ (const FVector& v)
 
 	return newVector;
 }
-FVector FVector::operator+ (const float& value)
+FVector FVector::operator+ (const float& value) const
 {
 	FVector newVector(dimensions);
 	for (int i = 0; i < dimensions; i++)
@@ -152,7 +152,7 @@ FVector FVector::operator+ (const float& value)
 
 	return newVector;
 }
-FVector FVector::operator- (const FVector& v)
+FVector FVector::operator- (const FVector& v) const
 {
 	if (dimensions != v.getDimensions())
 	{
@@ -166,7 +166,7 @@ FVector FVector::operator- (const FVector& v)
 
 	return newVector;
 }
-FVector FVector::operator- (const float& value)
+FVector FVector::operator- (const float& value) const
 {
 	FVector newVector(dimensions);
 	for (int i = 0; i < dimensions; i++)
@@ -175,7 +175,7 @@ FVector FVector::operator- (const float& value)
 	return newVector;
 }
 // Acts like the dot product
-float FVector::operator* (const FVector& v)
+float FVector::operator* (const FVector& v) const
 {
 	if (dimensions != v.getDimensions())
 	{
@@ -189,7 +189,7 @@ float FVector::operator* (const FVector& v)
 
 	return sum;
 }
-FVector FVector::operator* (const float& value)
+FVector FVector::operator* (const float& value) const
 {
 	FVector newVector(dimensions);
 	for (int i = 0; i < dimensions; i++)
@@ -197,7 +197,7 @@ FVector FVector::operator* (const float& value)
 
 	return newVector;
 }
-FVector FVector::operator/ (const float& value)
+FVector FVector::operator/ (const float& value) const
 {
 	FVector newVector(dimensions);
 	for (int i = 0; i < dimensions; i++)
@@ -214,7 +214,7 @@ FVector& FVector::operator= (const FVector& copy)
 
 	return *this;
 }
-bool FVector::operator== (const FVector& v)
+bool FVector::operator== (const FVector& v) const
 {
 	if (dimensions != v.getDimensions())
 		return false;
@@ -229,7 +229,7 @@ bool FVector::operator== (const FVector& v)
 
 	return true;
 }
-bool FVector::operator!= (const FVector& v)
+bool FVector::operator!= (const FVector& v) const
 {
 	return !((*this) == v);
 }
